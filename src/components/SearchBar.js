@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Button } from 'react-bootstrap'
 export default class SearchBar extends Component {
     constructor() {
         super()
@@ -39,8 +40,12 @@ export default class SearchBar extends Component {
                             value={this.state.userInput}
                             onChange={this.handleInputChange.bind(this)}
                         />
-                        <button
-                        />
+                        <Button
+                            bsStyle="primary"
+                            type="submit"
+                            disabled={!this.state.userInput}>
+                            Add
+                        </Button>
                     </section>
                 </div>
             </section>
