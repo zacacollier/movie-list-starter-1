@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { Button } from 'react-bootstrap'
 import axios from 'axios'
 import Autosuggest, { theme } from 'react-autosuggest'
 
 export default class SearchBar extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
 
         this.state = {
             value: '',
@@ -44,34 +43,36 @@ export default class SearchBar extends Component {
         return suggestion.Title
     }
 
-    renderSuggestion = (suggestion) => {
+    renderSuggestion = (suggestion, { query }) => {
+        if (suggestion.Poster) {
+            return (
+            <a className="searchResult-link">
+                <div id="movie" className="searchResult-text">
+                    <img
+                        alt={suggestion.Title}
+                        src={suggestion.Poster ? suggestion.Poster : 'http://images1.desimartini.com/static1/images/reel.gif'}
+                        className="searchResult-image"
+                    />
+                    <span className="searchResult-name">
+                        {suggestion.Title}
+                    </span>
+                </div>
+            </a>
+                )
+        }
         return (
             <a className="searchResult-link">
-                <img
-                    alt={suggestion.Title}
-                    src={suggestion.Poster ? suggestion.Poster : 'http://images1.desimartini.com/static1/images/reel.gif'}
-                    className="searchResult-image"
-                />
-                <div className="searchResult-text">
-                    <div className="searchResult-name">
+                <div id="movie" className="searchResult-text">
+                    <span className="searchResult-name">
                         {suggestion.Title}
-                    </div>
+                    </span>
                 </div>
             </a>
         )
     }
 
-    onSuggestionSelected = (event, { suggestion, suggestionValue, method = 'click'}) => {
-        event.preventDefault()
-        const updateUserInputList = this.state.userInputList.concat(suggestion)
-        /* const userInputList = [this.state.value, ...this.state.suggestions]*/
-        this.setState({
-            ...this.state,
-            userInput: '',
-            userInputList: updateUserInputList
-        })
-        localStorage.setItem('userInputList', JSON.stringify(this.state.userInputList))
-        console.log(this.state.userInputList)
+    onSuggestionSelected = (event, { suggestion, suggestionValue, method}) => {
+        this.handleClick(event, suggestion)
     }
 
     onSuggestionsFetchRequested = ({ value }) => {
@@ -88,9 +89,18 @@ export default class SearchBar extends Component {
         })
     }
 
-    handleClick(event, {suggestion}) {
+    handleClick(event, suggestion) {
         event.preventDefault()
-        this.onSuggestionSelected(event, {suggestion})
+        console.log(event, suggestion)
+        debugger
+        /* const updateUserInputList = this.state.userInputList.concat(suggestion)*/
+        const userInputList = [suggestion, ...this.state.userInputList]
+        this.setState({
+            userInput: '',
+            userInputList: userInputList
+        })
+        localStorage.setItem('userInputList', JSON.stringify(this.state.userInputList))
+        console.log(this.state.userInputList)
     }
 
     onChange(event, { newValue }) {
@@ -112,6 +122,7 @@ export default class SearchBar extends Component {
         const inputProps = {
             value,
             onChange: this.onChange,
+            onClick: this.handleClick,
             placeholder: 'Search...'
         }
         return (
@@ -128,7 +139,6 @@ export default class SearchBar extends Component {
                             renderSuggestion={this.renderSuggestion}
                             theme={theme}
                         />
-
                     </section>
                 </div>
             </section>
