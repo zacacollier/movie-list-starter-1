@@ -63,12 +63,12 @@ export default class SearchBar extends Component {
 
     onSuggestionSelected = (event, { suggestion, suggestionValue, method = 'click'}) => {
         event.preventDefault()
-        /* const updateUserInputList = this.state.userInputList.concat(suggestion)*/
-        const userInputList = [this.state.value, ...this.state.suggestions]
+        const updateUserInputList = this.state.userInputList.concat(suggestion)
+        /* const userInputList = [this.state.value, ...this.state.suggestions]*/
         this.setState({
             ...this.state,
             userInput: '',
-            userInputList: userInputList
+            userInputList: updateUserInputList
         })
         localStorage.setItem('userInputList', JSON.stringify(this.state.userInputList))
         console.log(this.state.userInputList)
