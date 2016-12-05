@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button } from 'react-bootstrap'
 import axios from 'axios'
-import Autosuggest from 'react-autosuggest'
+import Autosuggest, { theme } from 'react-autosuggest'
 
 export default class SearchBar extends Component {
     constructor() {
@@ -35,14 +35,13 @@ export default class SearchBar extends Component {
         return inputLength === 0
             ? []
             : suggestions.filter(movie => {
-                return movie.title
-                     ? movie.title.toLowerCase().slice(0, inputLength) === inputValue
+                return movie.Title
+                     ? movie.Title.toLowerCase().slice(0, inputLength) === inputLength
                      : `Working...`
                 })
     }
     getSuggestionValue = (suggestion) => {
-        const { suggestions } = this.state
-        return suggestions.name
+        return suggestion.Title
     }
 
     renderSuggestion = (suggestion) => {
@@ -67,6 +66,7 @@ export default class SearchBar extends Component {
     }
 
     onSuggestionsFetchRequested = ({ value }) => {
+        console.log(value)
         this.setState({
             suggestions: this.getSuggestion(value)
         })
@@ -83,16 +83,16 @@ export default class SearchBar extends Component {
         /* this.props.onAdd(userInputList[0])*/
     }
 
-    onChange(event) {
+    onChange(event, { newValue }) {
         // replace spaces with "+"
         this.setState({
             ...this.state,
-            value: event.target.value
+            value: newValue
         })
         let inputFilter = this.state.value.split('')
                               .map((i) => i.replace(/\s/, "+"))
                               .join('')
-        axios.get(`http://www.omdbapi.com/?t=${inputFilter}&plot=short&r=json`)
+        axios.get(`http://www.omdbapi.com/?t=${event.target.value}&plot=short&r=json`)
              .then(resp => this.setState({ suggestions: [resp.data] }))
              .catch(err => console.error(`Axios: SearchBar error: ${err}`))
     }
@@ -115,6 +115,7 @@ export default class SearchBar extends Component {
                             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                             inputProps={inputProps}
                             renderSuggestion={this.renderSuggestion}
+                            theme={theme}
                         />
 
                     </section>
