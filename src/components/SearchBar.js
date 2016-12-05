@@ -1,15 +1,19 @@
 import React, { Component } from 'react'
 import { Button } from 'react-bootstrap'
 import axios from 'axios'
+import Autosuggest from 'react-autosuggest'
 
 export default class SearchBar extends Component {
     constructor() {
         super()
 
         this.state = {
-            userInput: '',
-            userInputList: []
+            value: '',
+            userInputList: [],
+            suggestions: []
         }
+        this.onChange = this.onChange.bind(this)
+        this.handleClick = this.handleClick.bind(this)
     }
 
     componentDidMount() {
@@ -23,16 +27,55 @@ export default class SearchBar extends Component {
         }
     }
 
-    handleInputChange(event) {
-        // replace spaces with "+"
+
+    getSuggestion = (value) => {
+        const { suggestions } = this.state
+        const inputValue = value.trim().toLowerCase()
+        const inputLength = inputValue.length
+        return inputLength === 0
+            ? []
+            : suggestions.filter(movie => {
+                return movie.title
+                     ? movie.title.toLowerCase().slice(0, inputLength) === inputValue
+                     : `Working...`
+                })
+    }
+    getSuggestionValue = (suggestion) => {
+        const { suggestions } = this.state
+        return suggestions.name
+    }
+
+    renderSuggestion = (suggestion) => {
+        return (
+            <a className="searchResult-link">
+                <img
+                    alt={suggestion.Title}
+                    src={suggestion.Poster}
+                    className="searchResult-image"
+                />
+                <div className="searchResult-text">
+                    <div className="searchResult-name">
+                        {suggestion.Title}
+                    </div>
+                </div>
+            </a>
+        )
+    }
+
+    onSelectSuggestion = (event, { suggestion }) => {
+        console.log(`Suggestion: ${suggestion}`)
+    }
+
+    onSuggestionsFetchRequested = ({ value }) => {
         this.setState({
-            ...this.state,
-            userInput: event.target.value
+            suggestions: this.getSuggestion(value)
         })
-        let inputFilter = this.state.userInput.split('').map((i) => i.replace(/\s/, "+")).join('')
-        axios.get(`http://www.omdbapi.com/?t=${inputFilter}&plot=short&r=json`)
-             .then(resp => console.log(resp.data))
-             .catch(err => console.error(`Axios: SearchBar error: ${err}`))
+    }
+
+    onSuggestionsClearRequested = () => {
+        this.setState({
+            suggestions: []
+        })
     }
 
     handleClick(event) {
@@ -40,25 +83,40 @@ export default class SearchBar extends Component {
         /* this.props.onAdd(userInputList[0])*/
     }
 
+    onChange(event) {
+        // replace spaces with "+"
+        this.setState({
+            ...this.state,
+            value: event.target.value
+        })
+        let inputFilter = this.state.value.split('')
+                              .map((i) => i.replace(/\s/, "+"))
+                              .join('')
+        axios.get(`http://www.omdbapi.com/?t=${inputFilter}&plot=short&r=json`)
+             .then(resp => this.setState({ suggestions: [resp.data] }))
+             .catch(err => console.error(`Axios: SearchBar error: ${err}`))
+    }
+
     render() {
+        const { value, suggestions } = this.state
+        const inputProps = {
+            value,
+            onChange: this.onChange,
+            placeholder: 'Search...'
+        }
         return (
             <section className="container">
                 <div className="row">
                     <section className="col-xs-12">
-                        <label htmlFor="userInput">Search movies to add:
-                        </label>
-                        <input
-                            type="text"
-                            value={this.state.userInput}
-                            onChange={this.handleInputChange.bind(this)}
+                        <Autosuggest
+                            suggestions={suggestions}
+                            getSuggestionValue={this.getSuggestionValue}
+                            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                            inputProps={inputProps}
+                            renderSuggestion={this.renderSuggestion}
                         />
-                        <Button
-                            bsStyle="primary"
-                            type="submit"
-                            onClick={this.handleClick.bind(this)}
-                        >
-                            Add
-                        </Button>
+
                     </section>
                 </div>
             </section>
