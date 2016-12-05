@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { Button } from 'react-bootstrap'
+import axios from 'axios'
+
 export default class SearchBar extends Component {
     constructor() {
         super()
@@ -22,10 +24,20 @@ export default class SearchBar extends Component {
     }
 
     handleInputChange(event) {
+        // replace spaces with "+"
         this.setState({
             ...this.state,
             userInput: event.target.value
         })
+        let inputFilter = this.state.userInput.split('').map((i) => i.replace(/\s/, "+")).join('')
+        axios.get(`http://www.omdbapi.com/?t=${inputFilter}&plot=short&r=json`)
+             .then(resp => console.log(resp.data))
+             .catch(err => console.error(`Axios: SearchBar error: ${err}`))
+    }
+
+    handleClick(event) {
+        event.preventDefault()
+        /* this.props.onAdd(userInputList[0])*/
     }
 
     render() {
@@ -43,7 +55,8 @@ export default class SearchBar extends Component {
                         <Button
                             bsStyle="primary"
                             type="submit"
-                            disabled={!this.state.userInput}>
+                            onClick={this.handleClick.bind(this)}
+                        >
                             Add
                         </Button>
                     </section>
