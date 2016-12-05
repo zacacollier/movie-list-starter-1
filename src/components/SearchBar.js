@@ -49,7 +49,7 @@ export default class SearchBar extends Component {
             <a className="searchResult-link">
                 <img
                     alt={suggestion.Title}
-                    src={suggestion.Poster}
+                    src={suggestion.Poster ? suggestion.Poster : 'http://images1.desimartini.com/static1/images/reel.gif'}
                     className="searchResult-image"
                 />
                 <div className="searchResult-text">
@@ -61,12 +61,20 @@ export default class SearchBar extends Component {
         )
     }
 
-    onSelectSuggestion = (event, { suggestion }) => {
-        console.log(`Suggestion: ${suggestion}`)
+    onSuggestionSelected = (event, { suggestion, suggestionValue, method = 'click'}) => {
+        event.preventDefault()
+        /* const updateUserInputList = this.state.userInputList.concat(suggestion)*/
+        const userInputList = [this.state.value, ...this.state.suggestions]
+        this.setState({
+            ...this.state,
+            userInput: '',
+            userInputList: userInputList
+        })
+        localStorage.setItem('userInputList', JSON.stringify(this.state.userInputList))
+        console.log(this.state.userInputList)
     }
 
     onSuggestionsFetchRequested = ({ value }) => {
-        console.log(value)
         this.setState({
             suggestions: this.getSuggestion(value)
         })
@@ -74,25 +82,27 @@ export default class SearchBar extends Component {
 
     onSuggestionsClearRequested = () => {
         this.setState({
+            ...this.state,
+            value: '',
             suggestions: []
         })
     }
 
-    handleClick(event) {
+    handleClick(event, {suggestion}) {
         event.preventDefault()
-        /* this.props.onAdd(userInputList[0])*/
+        this.onSuggestionSelected(event, {suggestion})
     }
 
     onChange(event, { newValue }) {
-        // replace spaces with "+"
         this.setState({
             ...this.state,
             value: newValue
         })
+        // replace spaces with "+"
         let inputFilter = this.state.value.split('')
                               .map((i) => i.replace(/\s/, "+"))
                               .join('')
-        axios.get(`http://www.omdbapi.com/?t=${event.target.value}&plot=short&r=json`)
+        axios.get(`http://www.omdbapi.com/?t=${inputFilter}&plot=short&r=json`)
              .then(resp => this.setState({ suggestions: [resp.data] }))
              .catch(err => console.error(`Axios: SearchBar error: ${err}`))
     }
@@ -111,8 +121,9 @@ export default class SearchBar extends Component {
                         <Autosuggest
                             suggestions={suggestions}
                             getSuggestionValue={this.getSuggestionValue}
-                            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                            onSuggestionSelected={this.onSuggestionSelected.bind(this)}
+                            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested.bind(this)}
+                            onSuggestionsClearRequested={this.onSuggestionsClearRequested.bind(this)}
                             inputProps={inputProps}
                             renderSuggestion={this.renderSuggestion}
                             theme={theme}
