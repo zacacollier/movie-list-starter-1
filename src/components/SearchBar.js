@@ -15,12 +15,16 @@ export default class SearchBar extends Component {
 
     componentDidMount = () => {
         const savedUserInput = JSON.parse(localStorage.getItem('userInputList'))
-
-        if (savedUserInput) {
-            this.setState({
-                userInputList: savedUserInput
-            })
-        }
+        console.log(savedUserInput)
+        const filteredMovies = savedUserInput.filter((item) => {
+            if (Object.keys(item).includes("imdbID")) {
+                return item
+            }
+        })
+        console.log(filteredMovies)
+        this.setState({
+            userInputList: filteredMovies
+        })
     }
 
 
@@ -43,8 +47,8 @@ export default class SearchBar extends Component {
     renderSuggestion = (suggestion, { query }) => {
         if (suggestion.Poster) {
             return (
-            <a className="searchResult-link">
-                <div id="movie" className="searchResult-text">
+            <a className="searchResult-link col-xs-12 list-group">
+                <div id="movie" className="searchResult-text col-xs-12 list-group-item">
                     <img
                         alt={suggestion.Title}
                         src={suggestion.Poster ? suggestion.Poster : 'http://images1.desimartini.com/static1/images/reel.gif'}
@@ -85,6 +89,15 @@ export default class SearchBar extends Component {
         })
     }
 
+    /* shouldRenderSuggestions = (value) => {
+     *     const { suggestions } = this.state
+     *     const inputValue = value.trim().toLowerCase()
+     *     const inputLength = inputValue.length
+     *     for (let movie of suggestions) {
+     *         return !!movie.Title 
+     *     }
+     * }
+     */
     handleClick = (event, suggestion) => {
         event.preventDefault()
         const updateUserInputList = [suggestion, ...this.state.userInputList]
@@ -116,18 +129,21 @@ export default class SearchBar extends Component {
             value,
             onChange: this.onChange,
             onClick: this.handleClick,
-            placeholder: 'Search...'
+            placeholder: 'Search...',
+            className: 'form-group col-xs-12'
         }
         return (
             <section className="container">
                 <div className="row">
-                    <section className="col-xs-12">
+                    <section className="col-xs-12 form-inline">
                         <Autosuggest
+                            movies={this.state.userInputList}
                             suggestions={suggestions}
                             getSuggestionValue={this.getSuggestionValue}
-                            onSuggestionSelected={this.onSuggestionSelected.bind(this)}
-                            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested.bind(this)}
-                            onSuggestionsClearRequested={this.onSuggestionsClearRequested.bind(this)}
+                            onSuggestionSelected={this.onSuggestionSelected}
+                            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                            shouldRenderSuggestions={this.shouldRenderSuggestions}
                             inputProps={inputProps}
                             renderSuggestion={this.renderSuggestion}
                             theme={theme}
