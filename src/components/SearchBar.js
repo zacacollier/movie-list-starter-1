@@ -11,16 +11,13 @@ export default class SearchBar extends Component {
             userInputList: [],
             suggestions: []
         }
-        this.onChange = this.onChange.bind(this)
-        this.handleClick = this.handleClick.bind(this)
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         const savedUserInput = JSON.parse(localStorage.getItem('userInputList'))
 
         if (savedUserInput) {
             this.setState({
-                ...this.state,
                 userInputList: savedUserInput
             })
         }
@@ -83,27 +80,23 @@ export default class SearchBar extends Component {
 
     onSuggestionsClearRequested = () => {
         this.setState({
-            ...this.state,
             value: '',
             suggestions: []
         })
     }
 
-    handleClick(event, suggestion) {
+    handleClick = (event, suggestion) => {
         event.preventDefault()
         const updateUserInputList = [suggestion, ...this.state.userInputList]
-        console.log(updateUserInputList[0])
-        debugger
         this.setState({
             userInput: '',
-            userInputList: updateUserInputList[0]
-        })
+            userInputList: updateUserInputList
+        }, () => {
         localStorage.setItem('userInputList', JSON.stringify(this.state.userInputList))
-        console.log(this.state.userInputList)
-        debugger
+        })
     }
 
-    onChange(event, { newValue }) {
+    onChange = (event, { newValue }) => {
         this.setState({
             ...this.state,
             value: newValue
