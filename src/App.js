@@ -33,7 +33,10 @@ export default class App extends Component {
         // replace spaces with "+"
     }
     handleSuggestionSelect = (suggestion) => {
-        const newMovies = this.state.movies.concat(suggestion)
+        const newMovies = this.state.movies.concat(suggestion).reduce((acc, prev) => {
+            if (prev.Actors) acc.push(prev)
+            return acc
+        }, [])
         console.log(newMovies)
         this.setState({
             movies: newMovies

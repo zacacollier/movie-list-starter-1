@@ -90,15 +90,9 @@ export default class SearchBar extends Component {
     }
 
     onSuggestionSelected = (event, { suggestion }) => {
-        /* const update = [suggestion, ...this.state.userInputList]*/
         axios.get(`http://www.omdbapi.com/?t=${suggestion.Title}&plot=short&r=json`)
              .then(resp => this.props.handleSelect([resp.data]))
              .catch(err => console.error(`Axios: SearchBar error: ${err}`))
-        /* this.setState({
-         *     userInputList: suggestion
-         *     })*/
-        /* console.log(this.state.userInputList)*/
-        /* this.props.handleSelect(this.state.userInputList)*/
     }
 
     onChange = (event, { newValue }) => {
