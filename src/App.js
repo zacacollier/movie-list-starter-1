@@ -15,7 +15,10 @@ export default class App extends Component {
         }
     }
     componentDidMount = () => {
-        const savedUserInput = JSON.parse(localStorage.getItem('userInputList'))
+        const savedUserInput = JSON.parse(localStorage.getItem('movies'))
+        if (savedUserInput === null) {
+            return
+        }
         const filteredMovies = savedUserInput.filter((item) => {
             if (Object.keys(item).includes("imdbID")) {
                 return item
@@ -30,7 +33,6 @@ export default class App extends Component {
             suggestions: suggestions
         })
         console.log(suggestions)
-        // replace spaces with "+"
     }
     handleSuggestionSelect = (suggestion) => {
         const newMovies = this.state.movies.concat(suggestion).reduce((acc, prev) => {
@@ -41,7 +43,7 @@ export default class App extends Component {
         this.setState({
             movies: newMovies
         })
-        /* localStorage.setItem('userInputList', JSON.stringify(this.state))*/
+        localStorage.setItem('movies', JSON.stringify(this.state.movies))
     }
     handleMovieClick = (event) => {
         console.log(event.target.value)

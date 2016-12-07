@@ -121,7 +121,7 @@ export default class SearchBar extends Component {
         return (
             <section className="container">
                 <div className="row">
-                    <section className="col-xs-12 form-inline">
+                    <section className="col-xs-12 form-inline search">
                         <Autosuggest
                             movies={this.state.userInputList}
                             suggestions={suggestions}
