@@ -7,30 +7,47 @@ import './App.css';
 export default class App extends Component {
     constructor(props) {
         super(props)
-
         this.state = {
             value: '',
-            movies: []
+            movies: [],
+            userInputList: [],
+            isOpen: false
         }
     }
     componentDidMount = () => {
         const savedUserInput = JSON.parse(localStorage.getItem('userInputList'))
-        console.log(savedUserInput)
         const filteredMovies = savedUserInput.filter((item) => {
             if (Object.keys(item).includes("imdbID")) {
                 return item
             }
         })
-        console.log(filteredMovies)
         this.setState({
             movies: filteredMovies
         })
     }
+    handleSearchbarChange = (event, suggestions) => {
+        this.setState({
+            suggestions: suggestions
+        })
+        console.log(suggestions)
+        // replace spaces with "+"
+    }
+    handleSuggestionSelect = (suggestion) => {
+        const newMovies = this.state.movies.concat(suggestion)
+        console.log(newMovies)
+        this.setState({
+            movies: newMovies
+        })
+        /* localStorage.setItem('userInputList', JSON.stringify(this.state))*/
+    }
+    handleMovieClick = (event) => {
+        console.log(event.target.value)
+    }
   render() {
     return (
         <div>
-            <SearchBar movies={this.props.movies} />
-            <MovieList movies={this.state.movies} />
+            <SearchBar inputProps={this.props.inputProps} onChange={this.handleSearchbarChange} onClick={this.handleSuggestionSelect} movies={this.props.movies} handleSelect={this.handleSuggestionSelect} />
+            <MovieList handleMovieClick={this.handleMovieClick} movies={this.state.movies} />
         </div>
     );
   }

@@ -13,21 +13,6 @@ export default class SearchBar extends Component {
         }
     }
 
-    componentDidMount = () => {
-        const savedUserInput = JSON.parse(localStorage.getItem('userInputList'))
-        console.log(savedUserInput)
-        const filteredMovies = savedUserInput.filter((item) => {
-            if (Object.keys(item).includes("imdbID")) {
-                return item
-            }
-        })
-        console.log(filteredMovies)
-        this.setState({
-            userInputList: filteredMovies
-        })
-    }
-
-
     getSuggestion = (value) => {
         const { suggestions } = this.state
         const inputValue = value.trim().toLowerCase()
@@ -100,13 +85,20 @@ export default class SearchBar extends Component {
      */
     handleClick = (event, suggestion) => {
         event.preventDefault()
-        const updateUserInputList = [suggestion, ...this.state.userInputList]
-        this.setState({
-            userInput: '',
-            userInputList: updateUserInputList
-        }, () => {
-        localStorage.setItem('userInputList', JSON.stringify(this.state.userInputList))
-        })
+        /* if suggeston is event return */
+        this.props.onClick(event, suggestion)
+    }
+
+    onSuggestionSelected = (event, { suggestion }) => {
+        /* const update = [suggestion, ...this.state.userInputList]*/
+        axios.get(`http://www.omdbapi.com/?t=${suggestion.Title}&plot=short&r=json`)
+             .then(resp => this.props.handleSelect([resp.data]))
+             .catch(err => console.error(`Axios: SearchBar error: ${err}`))
+        /* this.setState({
+         *     userInputList: suggestion
+         *     })*/
+        /* console.log(this.state.userInputList)*/
+        /* this.props.handleSelect(this.state.userInputList)*/
     }
 
     onChange = (event, { newValue }) => {
@@ -144,6 +136,7 @@ export default class SearchBar extends Component {
                             onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                             shouldRenderSuggestions={this.shouldRenderSuggestions}
+                            handleSelect={this.props.handleSelect}
                             inputProps={inputProps}
                             renderSuggestion={this.renderSuggestion}
                             theme={theme}

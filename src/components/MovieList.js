@@ -11,7 +11,7 @@ export default class MovieList extends Component {
                         {
                             movies.map((movie) => {
                                 return (
-                                    <li className="col-xs-12 col-sm-6 col-md-4 list-group-item text-center">
+                                    <li className="col-xs-12 col-sm-6 col-md-3 list-group-item text-center movie">
                                         <Movie
                                             key={movie.imdbID}
                                             Title={movie.Title}
