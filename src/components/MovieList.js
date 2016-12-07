@@ -11,7 +11,10 @@ export default class MovieList extends Component {
                         {
                             movies.map((movie) => {
                                 return (
-                                    <li className="col-xs-12 col-sm-6 col-md-3 list-group-item text-center movie">
+                                    <li
+                                        className="col-xs-12 col-sm-6 col-md-3 list-group-item text-center movie"
+                                        onClick={this.props.onClick}
+                                    >
                                         <Movie
                                             key={movie.imdbID}
                                             Title={movie.Title}

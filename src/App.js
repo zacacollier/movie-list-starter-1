@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Bootstrap from '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import SearchBar from './components/SearchBar'
 import MovieList from './components/MovieList'
+import MovieDetail from './components/MovieDetail'
 import './App.css';
 
 export default class App extends Component {
@@ -46,13 +47,33 @@ export default class App extends Component {
         localStorage.setItem('movies', JSON.stringify(this.state.movies))
     }
     handleMovieClick = (event) => {
-        console.log(event.target.value)
+        this.setState({
+            isOpen: true
+        })
+    }
+    closeModal = (event) => {
+        this.setState({
+            isOpen: false
+        })
     }
   render() {
     return (
         <div>
-            <SearchBar inputProps={this.props.inputProps} onChange={this.handleSearchbarChange} onClick={this.handleSuggestionSelect} movies={this.props.movies} handleSelect={this.handleSuggestionSelect} />
-            <MovieList handleMovieClick={this.handleMovieClick} movies={this.state.movies} />
+            <SearchBar
+                inputProps={this.props.inputProps}
+                onChange={this.handleSearchbarChange}
+                onClick={this.handleSuggestionSelect}
+                movies={this.props.movies}
+                handleSelect={this.handleSuggestionSelect}
+            />
+            <MovieList
+                onClick={this.handleMovieClick}
+                movies={this.state.movies}
+            />
+            <MovieDetail isOpen={this.state.isOpen}
+                         onRequestClose={this.closeModal}
+                         contentLabel={this.props.Title}
+            />
         </div>
     );
   }
