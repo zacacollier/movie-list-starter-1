@@ -61,11 +61,6 @@ export default class SearchBar extends Component {
         this.handleClick(event, suggestion)
     }
 
-    onSuggestionsFetchRequested = ({ value }) => {
-        this.setState({
-            suggestions: this.getSuggestion(value)
-        })
-    }
 
     onSuggestionsClearRequested = () => {
         this.setState({
@@ -83,6 +78,19 @@ export default class SearchBar extends Component {
      *     }
      * }
      */
+    onSuggestionsFetchRequested = ({ value }) => {
+        console.log(value)
+        let inputFilter = value.split('')
+                               .map((i) => i.replace(/\s/, "+"))
+                               .join('')
+        axios.get(`http://www.omdbapi.com/?t=${inputFilter}&plot=short&r=json`)
+             .then(resp => this.setState({ suggestions: [resp.data] }))
+             .catch(err => console.error(`Axios: SearchBar error: ${err}`))
+        /* this.setState({
+         *     suggestions: this.getSuggestion(value)
+         * })*/
+    }
+
     handleClick = (event, suggestion) => {
         event.preventDefault()
         /* if suggeston is event return */
@@ -101,12 +109,6 @@ export default class SearchBar extends Component {
             value: newValue
         })
         // replace spaces with "+"
-        let inputFilter = this.state.value.split('')
-                              .map((i) => i.replace(/\s/, "+"))
-                              .join('')
-        axios.get(`http://www.omdbapi.com/?t=${inputFilter}&plot=short&r=json`)
-             .then(resp => this.setState({ suggestions: [resp.data] }))
-             .catch(err => console.error(`Axios: SearchBar error: ${err}`))
     }
 
     render() {
