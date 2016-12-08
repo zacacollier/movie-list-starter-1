@@ -21,7 +21,7 @@ export default class MovieDetail extends Component {
         return (
             <Modal
                 isOpen={this.props.isOpen}
-                onRequestClose={this.props.onRequestClose}
+                onRequestClose={this.closeModal}
                 contentLabel={this.props.Title}
                 movie={this.props}
             >

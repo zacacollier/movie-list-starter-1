@@ -47,16 +47,6 @@ export default class App extends Component {
         })
         localStorage.setItem('movies', JSON.stringify(this.state.movies))
     }
-    handleMovieClick = (event) => {
-        this.setState({
-            isOpen: true
-        })
-    }
-    closeModal = (event) => {
-        this.setState({
-            isOpen: false
-        })
-    }
   render() {
     return (
         <div>
@@ -68,10 +58,10 @@ export default class App extends Component {
                 handleSelect={this.handleSuggestionSelect}
             />
             <MovieList
-                onClick={this.handleMovieClick}
+                onClick={this.props.onClick}
                 movies={this.state.movies}
-                isOpen={this.state.isOpen}
-                onRequestClose={this.closeModal}
+                isOpen={this.props.isOpen}
+                onRequestClose={this.props.onRequestClose}
             >
             </MovieList>
         </div>

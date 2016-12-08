@@ -2,6 +2,22 @@ import React, { Component } from 'react'
 import Movie from './Movie'
 import MovieDetail from './MovieDetail'
 export default class MovieList extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            isOpen: false
+        }
+    }
+
+    handleMovieClick = (event) => {
+        this.props.onClick(event)
+    }
+
+    onRequestClose = () => {
+        this.setState({
+            isOpen: false
+        })
+    }
 
     render() {
     const { movies } = this.props
@@ -14,24 +30,14 @@ export default class MovieList extends Component {
                                 return (
                                     <li
                                         className="col-xs-12 col-sm-6 col-md-3 list-group-item text-center movie"
-                                        onClick={this.props.onClick}
                                     >
                                         <Movie
                                             key={movie.imdbID}
                                             Title={movie.Title}
                                             Poster={movie.Poster}
-                                            onClick={movie.onClick}
-                                        />
-                                        <MovieDetail
+                                            onClick={this.props.onClick}
                                             isOpen={this.props.isOpen}
-                                            onRequestClose={this.props.onRequestClose}
-                                            contentLabel={movie.Title}
-                                            movie={movie}
-                                            key={movie.imdbID + `m`}
-                                            Title={movie.Title}
-                                            Poster={movie.Poster}
-                                        >
-                                        </MovieDetail>
+                                        />
                                     </li>
                                 )
                             })
