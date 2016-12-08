@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Bootstrap from '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import SearchBar from './components/SearchBar'
+import Movie from './components/Movie'
 import MovieList from './components/MovieList'
 import MovieDetail from './components/MovieDetail'
 import './App.css';
@@ -69,11 +70,10 @@ export default class App extends Component {
             <MovieList
                 onClick={this.handleMovieClick}
                 movies={this.state.movies}
-            />
-            <MovieDetail isOpen={this.state.isOpen}
-                         onRequestClose={this.closeModal}
-                         contentLabel={this.props.Title}
-            />
+                isOpen={this.state.isOpen}
+                onRequestClose={this.closeModal}
+            >
+            </MovieList>
         </div>
     );
   }

@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Modal from 'react-modal'
+import { Button } from 'react-bootstrap'
+import FontAwesome from 'react-fontawesome'
 import Movie from './Movie'
 
 export default class MovieDetail extends Component {
@@ -21,13 +23,25 @@ export default class MovieDetail extends Component {
                 isOpen={this.props.isOpen}
                 onRequestClose={this.props.onRequestClose}
                 contentLabel={this.props.Title}
+                movie={this.props}
             >
-                <Movie
-                    key={this.props.imdbID}
-                    Title={this.props.Title}
-                    Poster={this.props.Poster}
-                />
-                <button onClick={this.props.onRequestClose}>X</button>
+                <Button
+                    bsStyle="warning"
+                    onClick={this.props.onRequestClose}
+                >
+                    <FontAwesome
+                        name="window-close"
+                        size="2x"
+                    >
+                    </FontAwesome>
+                    {this.props.children}
+
+                </Button>
+                    <Movie
+                        key={this.props.imdbID}
+                        Title={this.props.Title}
+                        Poster={this.props.Poster}
+                    />
             </Modal>
         )
     }

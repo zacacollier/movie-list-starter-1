@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Movie from './Movie'
+import MovieDetail from './MovieDetail'
 export default class MovieList extends Component {
 
     render() {
@@ -19,7 +20,18 @@ export default class MovieList extends Component {
                                             key={movie.imdbID}
                                             Title={movie.Title}
                                             Poster={movie.Poster}
+                                            onClick={movie.onClick}
                                         />
+                                        <MovieDetail
+                                            isOpen={this.props.isOpen}
+                                            onRequestClose={this.props.onRequestClose}
+                                            contentLabel={movie.Title}
+                                            movie={movie}
+                                            key={movie.imdbID + `m`}
+                                            Title={movie.Title}
+                                            Poster={movie.Poster}
+                                        >
+                                        </MovieDetail>
                                     </li>
                                 )
                             })
