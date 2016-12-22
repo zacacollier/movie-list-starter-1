@@ -47,6 +47,16 @@ export default class App extends Component {
         })
         localStorage.setItem('movies', JSON.stringify(this.state.movies))
     }
+    handleDelete = (event, props) => {
+      console.log(event.target.id)
+      let { id } = event.target
+      const newMovies = this.state.movies.filter((movie) => {
+        return movie.imdbID !== id
+      })
+      this.setState({
+        movies: newMovies
+      }, () => localStorage.setItem('movies', JSON.stringify(this.state.movies)))
+    }
   render() {
     return (
         <div>
@@ -58,6 +68,7 @@ export default class App extends Component {
                 handleSelect={this.handleSuggestionSelect}
             />
             <MovieList
+                onDeleteClick={this.handleDelete}
                 onClick={this.props.onClick}
                 movies={this.state.movies}
                 isOpen={this.props.isOpen}

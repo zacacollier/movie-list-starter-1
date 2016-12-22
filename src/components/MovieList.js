@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import Movie from './Movie'
 import MovieDetail from './MovieDetail'
-import { Button } from 'react-bootstrap'
-import FontAwesome from 'react-fontawesome'
+import { Button, Glyphicon } from 'react-bootstrap'
 export default class MovieList extends Component {
     constructor(props) {
         super(props)
@@ -21,6 +20,9 @@ export default class MovieList extends Component {
         })
     }
 
+    handleDeleteClick = (event) => {
+      this.props.onDeleteClick(event, this.props )
+    }
     render() {
     const { movies } = this.props
         return (
@@ -34,14 +36,15 @@ export default class MovieList extends Component {
                                         className="col-xs-12 col-sm-6 col-md-3 list-group-item text-center movie"
                                     >
                                         <Button
+                                            pullLeft={true}
+                                            id={movie.imdbID}
+                                            onClick={this.handleDeleteClick}
+                                            style={{ borderRadius: 10+'px' }}
                                             bsStyle="danger"
+                                            bsSize="xs"
                                             size="2x"
                                         >
-                                            <FontAwesome
-                                                name="window-close"
-                                                size="2x"
-                                            >
-                                            </FontAwesome>
+                                          <Glyphicon glyph="remove" />
                                         </Button>
                                         <Movie
                                             key={movie.imdbID}
