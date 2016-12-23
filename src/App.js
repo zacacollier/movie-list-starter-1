@@ -47,19 +47,20 @@ export default class App extends Component {
         })
         localStorage.setItem('movies', JSON.stringify(this.state.movies))
     }
-    handleDelete = (event, props) => {
-      console.log(event.target.id)
-      let { id } = event.target
+    handleDelete = (id) => {
       const newMovies = this.state.movies.filter((movie) => {
         return movie.imdbID !== id
-      })
+      });
       this.setState({
         movies: newMovies
-      }, () => localStorage.setItem('movies', JSON.stringify(this.state.movies)))
+      }, () => {
+        localStorage.setItem('movies', JSON.stringify(this.state.movies))
+      })
     }
   render() {
     return (
         <div>
+            <h1 id={'header'}>Movie List</h1>
             <SearchBar
                 inputProps={this.props.inputProps}
                 onChange={this.handleSearchbarChange}

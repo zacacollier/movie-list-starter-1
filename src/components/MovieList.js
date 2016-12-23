@@ -20,8 +20,8 @@ export default class MovieList extends Component {
         })
     }
 
-    handleDeleteClick = (event) => {
-      this.props.onDeleteClick(event, this.props )
+    handleDeleteClick = (id) => {
+      this.props.onDeleteClick(id)
     }
     render() {
     const { movies } = this.props
@@ -38,7 +38,7 @@ export default class MovieList extends Component {
                                         <Button
                                             pullLeft={true}
                                             id={movie.imdbID}
-                                            onClick={this.handleDeleteClick}
+                                            onClick={() => this.handleDeleteClick(movie.imdbID)}
                                             style={{ borderRadius: 10+'px' }}
                                             bsStyle="danger"
                                             bsSize="xs"
@@ -49,7 +49,7 @@ export default class MovieList extends Component {
                                         <Movie
                                             key={movie.imdbID}
                                             Title={movie.Title}
-                                            Poster={movie.Poster}
+                                            Poster={movie.Poster ? movie.Poster : null}
                                             onClick={this.props.onClick}
                                             isOpen={this.props.isOpen}
                                         />
